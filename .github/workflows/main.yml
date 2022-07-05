@@ -1,0 +1,47 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+name: Testes
+
+# Gatilhos
+#   Programados
+#   Acionados por eventos
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+#   Máquina ou ambiente
+    runs-on: ubuntu-latest
+
+#   Passos
+    steps:
+    
+#   Donwload do código
+    - uses: actions/checkout@v2
+    
+# Setup da versão do Node
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+        
+#  Instalacão das dependecias e execucão
+    - run: npm install
+    - run: npm run cy:run
+      continue-on-error: true
+      
+    - run: npm run report:merge
+    
+    - run: npm run report:mocha
+    
+#  Github Pages -> publicar o relatório
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.7
+      with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: mochawesome-report
