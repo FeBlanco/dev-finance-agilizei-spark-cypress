@@ -1,0 +1,6 @@
+node_modules
+cypress/videos
+Cypress/screenshots
+mochawesome-report
+index.json
+package-lock.json
